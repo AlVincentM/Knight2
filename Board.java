@@ -3,11 +3,12 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;
 import javax.swing.border.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class Board {
 
     private final JPanel gui = new JPanel(new BorderLayout(3, 3));
-    private JButton[][] chessBoardSquares = new JButton[8][8];
+    private Tile[][] chessBoardSquares = new Tile[8][8];
     private JPanel chessBoard;
     private static final String COLS = "ABCDEFGH";
 
@@ -18,51 +19,43 @@ public class Board {
     public final void initializeGui() {
         // set up the main GUI
         gui.setBorder(new EmptyBorder(5, 5, 5, 5));
-        JToolBar tools = new JToolBar();
-        tools.setFloatable(false);
-        gui.add(tools, BorderLayout.PAGE_START);
-        // tools.add(new JButton("New")); // TODO - add functionality!
-        // tools.add(new JButton("Save")); // TODO - add functionality!
-        tools.add(new JButton("Restore")); // TODO - add functionality!
-        // tools.addSeparator();
-        // tools.add(new JButton("Resign")); // TODO - add functionality!
-        // tools.addSeparator();
-        // tools.add(message);
 
         gui.add(new JLabel(""), BorderLayout.LINE_START);
 
         chessBoard = new JPanel(new GridLayout(0, 9));
         chessBoard.setBorder(new LineBorder(Color.BLACK));
         gui.add(chessBoard);
+        
+        ArrayList<Tile> listTiles = new ArrayList<Tile>();
 
-        // create the chess board squares
-        Insets buttonMargin = new Insets(0,0,0,0);
         for (int ii = 0; ii < chessBoardSquares.length; ii++) {
             for (int jj = 0; jj < chessBoardSquares[ii].length; jj++) {
 
-                JButton b = new JButton();
-                b.setMargin(buttonMargin);
-                // b.setIcon(new ImageIcon("img/knight.png"));
-                b.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        for(int i = 0; i < chessBoardSquares.length; i++) {
-                            for (int j = 0; j < chessBoardSquares[i].length; j++) {
-                                b.setIcon(null);
-                                chessBoardSquares[j][i] = b;
-                            }
+                Tile tile = new Tile(jj, ii);
+
+                listTiles.add(tile);
+
+                tile.tile.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent event) {
+
+                        for(Tile tile : listTiles) {
+                            tile.tile.setIcon(null);
                         }
-                        b.setIcon(new ImageIcon("img/knight.png"));
+
+                        tile.tile.setIcon(new ImageIcon("img/knight.png"));
+                        System.out.println("( " + tile.getXPosition() + ", " + tile.getYPosition() + " )");
+                        calculateLegalMoves(tile.getXPosition(), tile.getYPosition(), chessBoardSquares);
                     }
                 });
 
                 if ((jj % 2 == 1 && ii % 2 == 1)
                         //) {
                         || (jj % 2 == 0 && ii % 2 == 0)) {
-                    b.setBackground(Color.WHITE);
+                    tile.tile.setBackground(Color.WHITE);
                 } else {
-                    b.setBackground(Color.BLACK);
+                    tile.tile.setBackground(Color.BLACK);
                 }
-                chessBoardSquares[jj][ii] = b;
+                chessBoardSquares[jj][ii] = tile;
             }
         }
 
@@ -82,10 +75,53 @@ public class Board {
                         chessBoard.add(new JLabel("" + (ii + 1),
                                 SwingConstants.CENTER));
                     default:
-                        chessBoard.add(chessBoardSquares[jj][ii]);
+                        chessBoard.add(chessBoardSquares[jj][ii].tile);
                 }
             }
         }
+    }
+
+    public void calculateLegalMoves(int xCoords, int yCoords, Tile[][] chessBoardSquares) {
+        int knightXMoves[] = {2, 1, -1, -2, -2, -1,  1,  2};
+        int knightYMoves[] = {1, 2,  2,  1, -1, -2, -2, -1};
+
+        int possibleXCoords, possibleYCoords;
+
+        ArrayList<Integer> legalXCoords = new ArrayList<>();
+        ArrayList<Integer> legalYCoords = new ArrayList<>();
+
+        for(int i = 0; i < 8; i++) {
+
+            possibleXCoords = xCoords + knightXMoves[i];
+            possibleYCoords = yCoords + knightYMoves[i];
+
+            if((possibleXCoords >= 0 || possibleXCoords <= 7) || (possibleYCoords >= 0 || possibleYCoords <= 7)) {
+
+                legalXCoords.add(possibleXCoords);
+                legalYCoords.add(possibleYCoords);
+            }
+        }
+
+        for( int x : legalXCoords ) {
+            System.out.print(x + " ");
+        }
+        System.out.println();
+        for( int y: legalYCoords ) {
+            System.out.print(y + " ");
+        }
+
+        if (legalXCoords.size() == legalYCoords.size()) {
+            for (int i = 0; i < legalXCoords.size(); i++) {
+
+                int x = legalXCoords.get(i);
+                int y = legalYCoords.get(i);
+
+                chessBoardSquares[x][y].tile.setIcon(new ImageIcon("img/green_dot.png"));
+
+            }
+        }
+
+
     }
 
     public final JComponent getChessBoard() {
@@ -104,7 +140,7 @@ public class Board {
                 Board cb =
                         new Board();
 
-                JFrame f = new JFrame("ChessChamp");
+                JFrame f = new JFrame("Knight Moves");
                 f.add(cb.getGui());
                 f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 f.setLocationByPlatform(true);
