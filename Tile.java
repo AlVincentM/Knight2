@@ -7,11 +7,13 @@ public class Tile {
 
 	int tile_x_position = 0;
 	int tile_y_position = 0;
+  int tileId;
 
-	Tile(final int tile_x_position, final int tile_y_position) {
+	Tile(final int tileId) {
 
 		this.tile_x_position = tile_x_position;
 		this.tile_y_position = tile_y_position;
+    this.tileId = tileId;
 
 		tile = new JButton();
 
