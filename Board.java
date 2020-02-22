@@ -28,10 +28,12 @@ public class Board {
         
         ArrayList<Tile> listTiles = new ArrayList<Tile>();
 
-        for (int ii = 0; ii < chessBoardSquares.length; ii++) {
-            for (int jj = 0; jj < chessBoardSquares[ii].length; jj++) {
+        int tileId = 0;
 
-                Tile tile = new Tile(jj, ii);
+        for (int ii = 0; ii < chessBoardSquares.length; ii++) {
+            for (int jj = 0; jj < chessBoardSquares[ii].length; jj++, tileId++) {
+
+                Tile tile = new Tile(tileId);
 
                 listTiles.add(tile);
 
@@ -43,8 +45,9 @@ public class Board {
                         }
 
                         tile.tile.setIcon(new ImageIcon("img/knight.png"));
-                        System.out.println("( " + tile.getXPosition() + ", " + tile.getYPosition() + " )");
-                        calculateLegalMoves(tile.getXPosition(), tile.getYPosition(), chessBoardSquares);
+                        // System.out.println("( " + tile.getXPosition() + ", " + tile.getYPosition() + " )");
+                        // calculateLegalMoves(tile.getXPosition(), tile.getYPosition(), chessBoardSquares);
+                        System.out.println(tile.tileId);
                     }
                 });
 
@@ -57,6 +60,10 @@ public class Board {
                 }
                 chessBoardSquares[jj][ii] = tile;
             }
+        }
+
+        for (Tile tile : listTiles) {
+          System.out.println(tile.tileId);
         }
 
         //fill the chess board
@@ -81,25 +88,37 @@ public class Board {
         }
     }
 
-    public void calculateLegalMoves(int xCoords, int yCoords, Tile[][] chessBoardSquares) {
+    public void calculateLegalMoves(int tileId, Tile[][] chessBoardSquares) {
         int knightXMoves[] = {2, 1, -1, -2, -2, -1,  1,  2};
         int knightYMoves[] = {1, 2,  2,  1, -1, -2, -2, -1};
 
-        int possibleXCoords, possibleYCoords;
+        // Possible knight moves
+        final int[] CANDIDATE_MOVE_COORDINATES = { -17, -15, -10, -6, 6, 10, 15, 17 };
+
+        int possibleXCoords, possibleYCoords, possibleCoords = tiledId;
 
         ArrayList<Integer> legalXCoords = new ArrayList<>();
         ArrayList<Integer> legalYCoords = new ArrayList<>();
+        ArrayList<Integer> legalMoves = new ArrayList<>();
 
-        for(int i = 0; i < 8; i++) {
+        // for(int i = 0; i < 8; i++) {
 
-            possibleXCoords = xCoords + knightXMoves[i];
-            possibleYCoords = yCoords + knightYMoves[i];
+        //     possibleXCoords = xCoords + knightXMoves[i];
+        //     possibleYCoords = yCoords + knightYMoves[i];
 
-            if((possibleXCoords >= 0 || possibleXCoords <= 7) || (possibleYCoords >= 0 || possibleYCoords <= 7)) {
+        //     if((possibleXCoords >= 0 || possibleXCoords <= 7) || (possibleYCoords >= 0 || possibleYCoords <= 7)) {
 
-                legalXCoords.add(possibleXCoords);
-                legalYCoords.add(possibleYCoords);
-            }
+        //         legalXCoords.add(possibleXCoords);
+        //         legalYCoords.add(possibleYCoords);
+        //     }
+        // }
+
+        for (int legalCoords : CANDIDATE_MOVE_COORDINATES) {
+          possibleCoords += legalCoords;
+
+          if (possibleCoords >= 0 || possibleCoords <= 63) {
+            legalMoves.add(possibleCoords);
+          }
         }
 
         for( int x : legalXCoords ) {
@@ -110,15 +129,18 @@ public class Board {
             System.out.print(y + " ");
         }
 
-        if (legalXCoords.size() == legalYCoords.size()) {
-            for (int i = 0; i < legalXCoords.size(); i++) {
+        // if (legalXCoords.size() == legalYCoords.size()) {
+        //     for (int i = 0; i < legalXCoords.size(); i++) {
 
-                int x = legalXCoords.get(i);
-                int y = legalYCoords.get(i);
+        //         int x = legalXCoords.get(i);
+        //         int y = legalYCoords.get(i);
 
-                chessBoardSquares[x][y].tile.setIcon(new ImageIcon("img/green_dot.png"));
+        //         chessBoardSquares[x][y].tile.setIcon(new ImageIcon("img/green_dot.png"));
 
-            }
+        //     }
+        // }
+        for (int possibleCoords : legalMoves) {
+          
         }
 
 
