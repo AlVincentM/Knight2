@@ -55,7 +55,7 @@ public class Board {
                             tile.tile.setIcon(null);
                         }
 
-                        tile.tile.setIcon(new ImageIcon("img/knight.png"));
+                        tile.tile.setIcon(new ImageIcon("../img/knight.png"));
 
                         calculateLegalMoves(tile.getXPosition(), tile.getYPosition(), chessBoardSquares);
                     }
@@ -125,7 +125,7 @@ public class Board {
 
         // add green icon to every possible moves
         for (int i = 0; i < legalXCoords.size(); i++) {
-            chessBoardSquares[legalXCoords.get(i)][legalYCoords.get(i)].tile.setIcon(new ImageIcon("img/green_dot.png"));
+            chessBoardSquares[legalXCoords.get(i)][legalYCoords.get(i)].tile.setIcon(new ImageIcon("../img/green_dot.png"));
         }
 
     }
